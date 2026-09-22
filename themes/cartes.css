@@ -1,0 +1,206 @@
+/* =============================================================================
+ *  fa-updates — thème « cartes »
+ *  -----------------------------------------------------------------------------
+ *  Pastilles claires et arrondies sur deux colonnes, barre de titre colorée,
+ *  pictogramme carré à gauche, avatar rond à droite.
+ *
+ *  Pour l'utiliser :
+ *    1. charger ce fichier après fa-updates.css ;
+ *    2. dans config.js, ajouter   classe: 'cartes'
+ *       (le conteneur devient alors .fau-root.fau-cartes, et rien de ce qui
+ *        suit ne déborde sur un autre widget de la page).
+ *
+ *  Tout se règle dans le bloc ci-dessous. Le reste n'est que de la mise en place.
+ * ========================================================================== */
+
+.fau-cartes {
+
+  /* --- les couleurs du thème ---------------------------------------------- */
+  --cartes-encre: #2b2f55;        /* le texte des pastilles */
+  --cartes-pastille: #eceefb;     /* le fond des pastilles */
+  --cartes-pastille-survol: #e1e5fa;
+  --cartes-accent: #5b62c4;       /* la barre de titre, le pictogramme */
+  --cartes-accent-clair: #8f9bea; /* le dégradé de la barre de titre */
+  --cartes-icone: '✦';            /* le pictogramme ; '' pour une case vide */
+
+  /* --- les réglages repris du plugin --------------------------------------- */
+  --fau-colonnes: 2;
+  --fau-espacement: 8px;
+  --fau-espacement-encarts: 18px;
+
+  --fau-couleur: var(--cartes-encre);
+  --fau-fond: var(--cartes-pastille);
+  --fau-fond-survol: var(--cartes-pastille-survol);
+  --fau-bordure: transparent;
+  --fau-bordure-survol: transparent;
+  --fau-arrondi: 12px;
+  --fau-padding: 9px 11px;
+  --fau-glissement: 0;
+
+  --fau-avatar-taille: 30px;
+  --fau-avatar-arrondi: 50%;
+  --fau-avatar-fond: #fff;
+
+  --fau-titre-taille: 10px;
+  --fau-titre-graisse: 700;
+  --fau-titre-interligne: .6px;
+
+  --fau-meta-taille: 8px;
+  --fau-meta-opacite: .5;
+
+  --fau-entete-marge: 0 0 9px;
+}
+
+/* --- la barre de titre de l'encart ----------------------------------------- */
+.fau-cartes .fau-entete {
+  padding: 7px 13px;
+  border-radius: 10px;
+  background: linear-gradient(105deg, var(--cartes-accent), var(--cartes-accent-clair));
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  opacity: 1;
+}
+
+/* --- une pastille : pictogramme · texte · avatar --------------------------- */
+.fau-cartes .fau-lien { gap: 10px; }
+
+.fau-cartes .fau-lien::before {
+  content: var(--cartes-icone);
+  order: 1;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--cartes-accent);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.fau-cartes .fau-corps  { order: 2; }
+.fau-cartes .fau-avatar { order: 3; margin-left: auto; }
+
+.fau-cartes .fau-vide {
+  background: var(--cartes-pastille);
+  border-radius: var(--fau-arrondi);
+}
+
+/* --- l'encart libre : texte et boutons ------------------------------------- */
+.fau-cartes .fau-libre {
+  padding: 15px 16px;
+  border-radius: 14px;
+  background: var(--cartes-carte, #fff);
+}
+
+.fau-cartes .fau-libre .fau-entete {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--cartes-accent);
+  font-size: 13px;
+  letter-spacing: .5px;
+  margin: 0 0 2px;
+}
+
+.fau-cartes .fau-soustitre { margin-bottom: 10px; }
+
+.fau-cartes .fau-bouton {
+  background: var(--cartes-accent);
+  color: #fff;
+  --fau-titre-taille: 9px;
+  --fau-titre-interligne: 1px;
+}
+
+.fau-cartes .fau-bouton:hover { background: var(--cartes-accent-clair); }
+.fau-cartes .fau-bouton::before { display: none; }   /* pas de pictogramme ici */
+.fau-cartes .fau-bouton::after {
+  order: 4;            /* après le texte : le thème ordonne aussi ::before et l'avatar */
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+  font-size: 9px;
+}
+
+/* --- l'encart libre en colonne de gauche ------------------------------------
+ * Deux enfants seulement : l'encart libre, et .fau-colonne qui empile les
+ * autres. Ne s'applique que s'il y a effectivement un encart libre ; sinon les
+ * encarts restent empilés comme d'habitude.
+ */
+.fau-cartes:has(.fau-libre) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .fau-cartes:has(.fau-libre) { grid-template-columns: minmax(0, 1fr); }
+}
+
+.fau-cartes .fau-fantome { background: var(--cartes-pastille); opacity: .5; }
+
+/* =============================================================================
+ *  VARIANTES
+ * ========================================================================== */
+
+/* l'encart libre à droite plutôt qu'à gauche :
+.fau-cartes:has(.fau-libre) { grid-template-columns: minmax(0,2fr) minmax(0,1fr); }
+.fau-cartes .fau-libre  { order: 2; }
+.fau-cartes .fau-colonne { order: 1; }
+*/
+
+/* une seule colonne :
+.fau-cartes { --fau-colonnes: 1; }
+*/
+
+/* sans pictogramme :
+.fau-cartes .fau-lien::before { display: none; }
+*/
+
+/* un autre pictogramme (n'importe quel caractère) :
+.fau-cartes { --cartes-icone: '★'; }
+*/
+
+/* =============================================================================
+ *  VARIANTE SOMBRE
+ *  -----------------------------------------------------------------------------
+ *  Pour l'activer :  classe: 'cartes cartes-sombre'  dans config.js
+ *  (l'option accepte plusieurs noms séparés par un espace).
+ * ========================================================================== */
+
+.fau-cartes-sombre {
+  --cartes-encre: #e8e8f0;
+  --cartes-pastille: #242430;
+  --cartes-pastille-survol: #2c2c3a;
+  --cartes-accent: #5b62c4;
+  --cartes-accent-clair: #8f9bea;
+  --cartes-case: #32324a;       /* le fond du pictogramme et de l'avatar vide */
+  --cartes-carte: #1c1c26;      /* le fond de l'encart libre */
+
+  --fau-avatar-fond: var(--cartes-case);
+  --fau-meta-opacite: .55;
+}
+
+.fau-cartes-sombre .fau-lien::before {
+  background: var(--cartes-case);
+  color: var(--cartes-accent-clair);
+}
+
+/* Pour que la variante suive toute seule un forum à bascule jour/nuit, il suffit
+ * de rattacher le bloc ci-dessus au sélecteur du mode sombre du forum, par ex. :
+ *
+ *   [data-color-scheme="dark"] .fau-cartes { … les mêmes variables … }
+ *
+ * ou, si le forum suit simplement le réglage du visiteur :
+ *
+ *   @media (prefers-color-scheme: dark) { .fau-cartes { … } }
+ */

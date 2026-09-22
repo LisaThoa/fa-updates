@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>fa-updates — démo</title>
+
+<!-- la feuille du plugin, puis les réglages : config.css passe après, donc il gagne -->
+<link rel="stylesheet" href="fa-updates.css">
+<link rel="stylesheet" href="themes/cartes.css">
+<link rel="stylesheet" href="config.css">
+
+<style>
+  body{margin:0;padding:34px;background:#12121a;color:#d9d6e0;font-family:'Trebuchet MS',sans-serif}
+  .note{font-size:11px;color:#6d6a80;margin-bottom:22px}
+  .rangee{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+  .panneau{width:320px;padding:16px;background:#1b1b26;border-radius:10px}
+  .large{width:560px}
+  .tres-large{width:780px}
+  .clair{background:#f2eff7;color:#3a3446}
+  .carte-fond{background:#f6f7fe}
+  .carte-fond .etiquette{color:#8189cf}
+  .etiquette{margin:0 0 12px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a7fb0}
+  .clair .etiquette{color:#7a6ea6}
+
+  /* ——— exemples de réglages, à recopier dans config.css ——— */
+
+  /* deux colonnes de sujets, avatars carrés et plus gros */
+  #demo-grille .fau--liens{
+    --fau-colonnes:2;
+    --fau-avatar-taille:34px;
+    --fau-avatar-arrondi:4px;
+    --fau-bordure:color-mix(in srgb, currentColor 22%, transparent);
+  }
+  /* un encart discret */
+  #demo-grille .fau--rps{
+    --fau-avatar-taille:18px;
+    --fau-meta-opacite:.45;
+    --fau-glissement:0;
+  }
+</style>
+</head>
+<body>
+
+<p class="note">démo hors ligne : les données sont simulées (option <code>chargeur</code>), aucune requête vers un forum.</p>
+
+<div class="rangee">
+
+  <div class="panneau">
+    <p class="etiquette">réglages par défaut</p>
+    <!-- le widget vient se poser ici -->
+    <div id="demo-defaut"></div>
+  </div>
+
+  <div class="panneau large" id="demo-grille">
+    <p class="etiquette">deux colonnes · avatars carrés</p>
+    <div id="demo-grille-cible"></div>
+  </div>
+
+  <div class="panneau clair">
+    <p class="etiquette">sans avatar · dates brutes · hors auto-bump</p>
+    <div id="demo-clair"></div>
+  </div>
+
+  <div class="panneau tres-large carte-fond">
+    <p class="etiquette">thème « cartes » · avec encart libre à gauche</p>
+    <div id="demo-cartes"></div>
+  </div>
+
+  <div class="panneau tres-large">
+    <p class="etiquette">thème « cartes » · variante sombre</p>
+    <div id="demo-cartes-sombre"></div>
+  </div>
+
+</div>
+
+<script>
+/* ---- faux HTML de section, calqué sur un template ModernBB ---- */
+function ligneFactice(tid, titre, auteur, posteur, date, postid, avatar) {
+  return '<tr><td><div class="imglist"><img src=""></div></td>'
+    + '<td><div class="topiclist"><span class="topic_msgicon"></span>'
+    + '<a class="topictitle" href="/t' + tid + '-' + titre.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '">' + titre + '</a>'
+    + '<span class="authorlist"><span class="group-7"><strong>' + auteur + '</strong></span></span></div></td>'
+    + '<td><span class="statslist"><div class="vurep">2 reps</div></span></td>'
+    + '<td><div class="topicslist-avatar-lastpost lastpostavatar"><img src="' + avatar + '" alt="avatar"></div></td>'
+    + '<td><div class="bloclastp"><span class="topicslist-lastpost lastpost"><span>'
+    + '<div class="timeposte">' + date + '</div>'
+    + '<span class="group-7"><strong>' + posteur + '</strong></span></span>'
+    + '<span class="sizeimg"><a href="/t' + tid + '-x#' + postid + '"><img src="icon_topic_latest.png" alt="Voir le dernier message"></a></span>'
+    + '</span></div></td></tr>';
+}
+
+function pastille(couleur) {
+  return 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="' + couleur + '"/></svg>');
+}
+var AVA = [pastille('#7a6ea6'), pastille('#c0392b'), pastille('#a8703c'), pastille('#3c6ea8')];
+
+/* Chaque ligne illustre un cas que le plugin doit savoir gérer. Les pseudos et
+   les titres sont inventés : rien ici ne vient d'un vrai forum. */
+var MOCK_LIENS = '<html><head><title>fiches de liens</title></head><body><table>'
+  // post-it épinglé, en tête de page mais très ancien → doit retomber en bas
+  + ligneFactice(101, 'un post-it épinglé', 'membre un', 'membre un', 'Mer 21 Aoû 2024 - 20:45', 62, AVA[0])
+  + ligneFactice(148, 'le plus récent', 'membre deux', 'membre trois', "Aujourd'hui à 9:12", 4211, AVA[1])
+  // remonté par son propre auteur → masqué si masquerAutoBump vaut true
+  + ligneFactice(142, 'remonté par son auteur', 'membre quatre', 'membre quatre', 'Hier à 22:40', 4180, AVA[2])
+  + ligneFactice(137, 'avant-hier', 'membre cinq', 'membre six', 'Dim 20 Sep 2026 - 18:02', 4155, AVA[3])
+  // dernier message laissé par un invité
+  + ligneFactice(130, 'réponse d\'un invité', 'membre sept', 'Invité', 'Ven 18 Sep 2026 - 11:20', 4102, AVA[0])
+  // aucun avatar → le widget retombe sur l'initiale
+  + ligneFactice(122, 'sans avatar', 'membre huit', 'membre neuf', 'Mar 8 Sep 2026 - 20:15', 4044, '')
+  + '</table></body></html>';
+
+var MOCK_RPS = '<html><head><title>activité rps</title></head><body><table>'
+  + ligneFactice(150, 'un rp en cours', 'membre dix', 'membre onze', "Aujourd'hui à 8:24", 4209, AVA[3])
+  + ligneFactice(145, 'un autre rp', 'membre douze', 'membre treize', 'Hier à 19:33', 4176, AVA[2])
+  + ligneFactice(139, 'un rp plus ancien', 'membre quatorze', 'membre quatorze', 'Sam 19 Sep 2026 - 21:51', 4160, AVA[1])
+  + '</table></body></html>';
+
+var faux = function (url) {
+  return new Promise(function (r) {
+    setTimeout(function () { r(/f13-/.test(url) ? MOCK_RPS : MOCK_LIENS); }, 350);
+  });
+};
+
+var SECTIONS = [
+  { titre: 'fiches de liens', forum: 12, url: '/f12-fiches-de-liens', classe: 'liens' },
+  { titre: 'activité rps', forum: 13, url: '/f13-activite-rps', nombre: 3, classe: 'rps' }
+];
+
+/* un encart libre : du texte à soi et des boutons vers des sujets choisis.
+   Il se reconnaît à la présence de "html" ou de "liens", et ne lit rien. */
+var AVEC_INTRO = [
+  {
+    classe: 'intro',
+    titre: 'le mot du staff',
+    soustitre: 'can you keep it ?',
+    html: '<p>Un bloc de texte entièrement libre, écrit dans la config : '
+        + '<b>gras</b>, <i>italique</i>, liens, ce que vous voulez.</p>'
+        + '<p>Le thème le place en colonne de gauche.</p>',
+    liens: [
+      { texte: 'les rumeurs', url: '/t1-les-rumeurs' },
+      { texte: 'membres en danger', url: '/t2-membres-en-danger', detail: 'mis à jour' }
+    ]
+  },
+  {
+    titre: 'recherches',
+    classe: 'fusion',
+    nombre: 4,
+    sources: [
+      { forum: 12, url: '/f12-fiches-de-liens', titre: 'liens' },
+      { forum: 13, url: '/f13-activite-rps', titre: 'rps' }
+    ]
+  }
+].concat(SECTIONS);
+</script>
+
+<script src="fa-updates.js"></script>
+
+<script>
+/* 1. réglages par défaut */
+FAUpdates.init({
+  emplacement: '#demo-defaut',
+  chargeur: faux, cache: 0, style: false,
+  sections: SECTIONS
+});
+
+/* 2. mise en page à deux colonnes — tout se joue dans le CSS plus haut */
+FAUpdates.init({
+  emplacement: { cible: '#demo-grille-cible', position: 'fin' },
+  chargeur: faux, cache: 0, style: false,
+  sections: SECTIONS
+});
+
+/* 3. le thème « cartes » — deux colonnes, pastilles claires, avatar à droite */
+FAUpdates.init({
+  emplacement: '#demo-cartes',
+  classe: 'cartes',
+  chargeur: faux, cache: 0, style: false,
+  sections: AVEC_INTRO
+});
+
+/* 4. le même thème en variante sombre */
+FAUpdates.init({
+  emplacement: '#demo-cartes-sombre',
+  classe: 'cartes cartes-sombre',
+  chargeur: faux, cache: 0, style: false,
+  sections: AVEC_INTRO
+});
+
+/* 5. autres réglages */
+FAUpdates.init({
+  emplacement: '#demo-clair',
+  chargeur: faux, cache: 0, style: false,
+  avatar: false,
+  datesRelatives: false,
+  masquerAutoBump: true,
+  sections: [{ titre: 'fiches de liens', forum: 12, url: '/f12-fiches-de-liens', classe: 'liens' }]
+});
+</script>
+</body>
+</html>

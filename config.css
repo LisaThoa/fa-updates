@@ -1,0 +1,114 @@
+/* =============================================================================
+ *  fa-updates — CONFIGURATION DES STYLES
+ *  -----------------------------------------------------------------------------
+ *  Tous les réglages d'apparence sont ici. Deux façons de s'en servir :
+ *
+ *   a) coller ce fichier dans PA → Affichage → Couleurs → Feuille de style CSS
+ *      (il passe APRÈS fa-updates.css, donc il gagne) ;
+ *   b) ou le charger comme feuille à part, après fa-updates.css.
+ *
+ *  fa-updates.css n'a normalement pas besoin d'être touchée : elle ne fait que
+ *  décrire la structure, et lit toutes les valeurs ci-dessous.
+ *
+ *  Par défaut, le widget emprunte la couleur du texte autour de lui
+ *  (currentColor) : il se fond dans n'importe quel design sans rien régler.
+ * ========================================================================== */
+
+:root {
+
+  /* --- disposition des encarts --------------------------------------------- */
+  --fau-largeur: auto;          /* largeur du widget entier : 260px, 100%, auto… */
+  --fau-colonnes: 1;            /* nb de colonnes de sujets DANS un encart */
+  --fau-espacement: 4px;        /* entre deux sujets */
+  --fau-espacement-encarts: 14px; /* entre deux encarts */
+
+  /* --- un sujet ------------------------------------------------------------- */
+  --fau-fond: transparent;
+  --fau-fond-survol: transparent;
+  --fau-bordure: color-mix(in srgb, currentColor 14%, transparent);
+  --fau-bordure-survol: color-mix(in srgb, currentColor 35%, transparent);
+  --fau-arrondi: 6px;
+  --fau-padding: 6px 8px;
+  --fau-glissement: 2px;        /* décalage au survol (0 = immobile) */
+  --fau-transition: .18s;
+
+  /* --- avatar --------------------------------------------------------------- */
+  --fau-avatar-taille: 26px;
+  --fau-avatar-arrondi: 50%;    /* 50% = rond, 4px = carré adouci */
+  --fau-avatar-fond: color-mix(in srgb, currentColor 10%, transparent);
+
+  /* --- textes --------------------------------------------------------------- */
+  --fau-titre-taille: 11px;
+  --fau-titre-graisse: 600;
+  --fau-titre-casse: uppercase; /* none pour laisser la casse d'origine */
+  --fau-titre-interligne: .3px;
+
+  --fau-meta-taille: 9px;
+  --fau-meta-casse: uppercase;
+  --fau-meta-opacite: .6;
+
+  --fau-entete-taille: 11px;    /* le titre de l'encart */
+  --fau-entete-casse: uppercase;
+  --fau-entete-interligne: 1px;
+  --fau-entete-opacite: .75;
+  --fau-entete-marge: 0 0 6px;
+
+  --fau-couleur: inherit;       /* couleur du texte ; inherit = celle du forum */
+}
+
+
+/* =============================================================================
+ *  HABILLER UN ENCART EN PARTICULIER
+ *  -----------------------------------------------------------------------------
+ *  Chaque encart porte :
+ *    - la classe fau--<classe>, si on a rempli "classe" dans config.js
+ *    - un attribut data-fau="<id de la section>"
+ *  Les variables se redéclarent donc encart par encart.
+ * ========================================================================== */
+
+/*
+.fau--liens {
+  --fau-colonnes: 2;
+  --fau-avatar-taille: 34px;
+  --fau-avatar-arrondi: 4px;
+}
+
+.fau--rps {
+  --fau-avatar-taille: 20px;
+  --fau-meta-opacite: .45;
+}
+
+.fau[data-fau="12"] .fau-entete { color: #c0392b; }
+*/
+
+
+/* =============================================================================
+ *  DISPOSER LES ENCARTS DANS LA PAGE
+ *  -----------------------------------------------------------------------------
+ *  .fau-root est le conteneur de tous les encarts : c'est une colonne simple,
+ *  qu'on peut transformer en ce qu'on veut.
+ * ========================================================================== */
+
+/* deux encarts côte à côte :
+.fau-root {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+*/
+
+/* le widget en encadré flottant, collé en haut à droite :
+.fau-root {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 280px;
+  z-index: 50;
+}
+*/
+
+/* réorganiser les encarts sans toucher à config.js :
+.fau-root { display: flex; }
+.fau--rps   { order: 1; }
+.fau--liens { order: 2; }
+*/

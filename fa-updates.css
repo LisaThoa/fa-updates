@@ -1,0 +1,213 @@
+/* =============================================================================
+ *  fa-updates — structure
+ *  -----------------------------------------------------------------------------
+ *  Ce fichier ne contient que de la mise en page. Tous les réglages (couleurs,
+ *  tailles, colonnes, arrondis…) sont des variables, et se modifient dans
+ *  config.css — pas ici.
+ *
+ *  Repères pour habiller :
+ *    .fau-root                 le conteneur de tous les encarts
+ *    .fau                      un encart      (+ .fau--<classe>, [data-fau="12"])
+ *    .fau-entete               son titre
+ *    .fau-liste                la liste des sujets
+ *    .fau-entree               un sujet
+ *    .fau-lien                   > le lien cliquable
+ *    .fau-avatar                 > l'avatar du dernier posteur
+ *    .fau-sujet                  > le titre du sujet
+ *    .fau-meta                   > la ligne date · pseudo
+ *    .fau-colonne              regroupe les encarts lus quand il y a un encart
+ *                              libre, pour les mettre en colonne à côté de lui
+ *    .fau-libre                un encart de texte libre, avec :
+ *      .fau-soustitre            > sa ligne de sous-titre
+ *      .fau-html                 > le bloc de texte
+ *      .fau-boutons / .fau-bouton  > les liens vers des sujets
+ *    .fau-vide                 le message quand il n'y a rien
+ *    .fau--attente             l'encart pendant le chargement
+ * ========================================================================== */
+
+:root {
+  --fau-largeur: auto;
+  --fau-colonnes: 1;
+  --fau-espacement: 4px;
+  --fau-espacement-encarts: 14px;
+
+  --fau-fond: transparent;
+  --fau-fond-survol: transparent;
+  --fau-bordure: color-mix(in srgb, currentColor 14%, transparent);
+  --fau-bordure-survol: color-mix(in srgb, currentColor 35%, transparent);
+  --fau-arrondi: 6px;
+  --fau-padding: 6px 8px;
+  --fau-glissement: 2px;
+  --fau-transition: .18s;
+
+  --fau-avatar-taille: 26px;
+  --fau-avatar-arrondi: 50%;
+  --fau-avatar-fond: color-mix(in srgb, currentColor 10%, transparent);
+
+  --fau-titre-taille: 11px;
+  --fau-titre-graisse: 600;
+  --fau-titre-casse: uppercase;
+  --fau-titre-interligne: .3px;
+
+  --fau-meta-taille: 9px;
+  --fau-meta-casse: uppercase;
+  --fau-meta-opacite: .6;
+
+  --fau-entete-taille: 11px;
+  --fau-entete-casse: uppercase;
+  --fau-entete-interligne: 1px;
+  --fau-entete-opacite: .75;
+  --fau-entete-marge: 0 0 6px;
+
+  --fau-couleur: inherit;
+}
+
+.fau-root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fau-espacement-encarts);
+  width: var(--fau-largeur);
+  color: var(--fau-couleur);
+}
+
+.fau { margin: 0; min-width: 0; }
+
+.fau-colonne {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fau-espacement-encarts);
+  min-width: 0;
+}
+
+.fau-entete {
+  margin: var(--fau-entete-marge);
+  font-size: var(--fau-entete-taille);
+  letter-spacing: var(--fau-entete-interligne);
+  text-transform: var(--fau-entete-casse);
+  opacity: var(--fau-entete-opacite);
+  font-weight: inherit;
+}
+
+.fau-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--fau-colonnes), minmax(0, 1fr));
+  gap: var(--fau-espacement);
+}
+
+.fau-entree { margin: 0; padding: 0; min-width: 0; }
+
+.fau-lien {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--fau-padding);
+  background: var(--fau-fond);
+  border: 1px solid var(--fau-bordure);
+  border-radius: var(--fau-arrondi);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--fau-transition);
+}
+
+.fau-lien:hover {
+  background: var(--fau-fond-survol);
+  border-color: var(--fau-bordure-survol);
+  transform: translateX(var(--fau-glissement));
+}
+
+.fau-avatar {
+  flex: 0 0 auto;
+  width: var(--fau-avatar-taille);
+  height: var(--fau-avatar-taille);
+  border-radius: var(--fau-avatar-arrondi);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--fau-avatar-taille) * .42);
+  background: var(--fau-avatar-fond);
+}
+
+.fau-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.fau-corps { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+
+.fau-sujet {
+  font-size: var(--fau-titre-taille);
+  font-weight: var(--fau-titre-graisse);
+  letter-spacing: var(--fau-titre-interligne);
+  text-transform: var(--fau-titre-casse);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fau-meta {
+  display: flex;
+  gap: 4px;
+  font-size: var(--fau-meta-taille);
+  text-transform: var(--fau-meta-casse);
+  letter-spacing: .5px;
+  opacity: var(--fau-meta-opacite);
+}
+
+.fau-qui { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.fau-vide {
+  padding: var(--fau-padding);
+  font-size: calc(var(--fau-titre-taille) - 1px);
+  font-style: italic;
+  opacity: .6;
+}
+
+/* --- encart libre : texte + boutons ---------------------------------------- */
+.fau-soustitre {
+  margin: 0 0 8px;
+  font-size: var(--fau-soustitre-taille, 9px);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: .6;
+}
+
+.fau-html {
+  font-size: var(--fau-texte-taille, 11px);
+  line-height: 1.65;
+}
+
+.fau-html p { margin: 0 0 8px; }
+.fau-html p:last-child { margin-bottom: 0; }
+
+.fau-boutons {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fau-espacement);
+}
+
+.fau-bouton::after {
+  content: var(--fau-fleche, '→');
+  margin-left: auto;
+  padding-left: 8px;
+  flex: 0 0 auto;
+}
+
+/* chargement */
+.fau-fantome {
+  height: calc(var(--fau-avatar-taille) + 12px);
+  border-radius: var(--fau-arrondi);
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  animation: fau-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes fau-pulse { 0%, 100% { opacity: .35 } 50% { opacity: .7 } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fau-lien { transition: none }
+  .fau-lien:hover { transform: none }
+  .fau-fantome { animation: none }
+}
