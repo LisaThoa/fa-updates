@@ -98,6 +98,10 @@ window.FA_UPDATES_CONFIG = {
      * quand ils sont déjà mis en avant dans un autre. */
     // { titre: 'liens', url: '/f12-fiches-de-liens', exclure: [1234, 5678] },
 
+    /* "source: false" masque la provenance dans un encart fusionné — utile
+     * quand elle n'apprend rien. Le réglage existe aussi plus bas, pour tous. */
+    // { titre: 'liens', source: false, sources: [ /* … */ ] },
+
     /* Un encart LIBRE : pas de section lue, juste du texte à soi et des liens
      * vers des sujets importants. Reconnu à la présence de "html" ou "liens".
      * Le thème « cartes » le place en colonne de gauche.

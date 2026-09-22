@@ -95,8 +95,8 @@ Un encart peut aussi :
   liens: [ { texte: 'les rumeurs', url: '/t1-les-rumeurs' } ] }
 ```
 
-Dans un encart fusionné, chaque sujet affiche sa section d'origine (`source: false`
-pour l'enlever). Un encart à liste blanche garde l'ordre des ids donnés.
+Dans un encart fusionné, chaque sujet affiche sa section d'origine — `source: false`
+pour l'enlever, sur un encart précis ou sur tout le widget. Un encart à liste blanche garde l'ordre des ids donnés.
 L'encart libre est placé en colonne de gauche par le thème « cartes ».
 
 Le widget **s'ajoute** à la cible, il ne remplace jamais son contenu. Plusieurs

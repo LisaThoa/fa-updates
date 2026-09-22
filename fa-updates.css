@@ -152,9 +152,15 @@
   text-transform: var(--fau-meta-casse);
   letter-spacing: .5px;
   opacity: var(--fau-meta-opacite);
+  /* une seule ligne, quoi qu'il arrive : sans ça une méta un peu longue passe
+     à la ligne et déséquilibre la hauteur des sujets voisins */
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.fau-qui { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fau-meta > * { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.fau-date, .fau-sep { flex: 0 0 auto; }
 
 .fau-vide {
   padding: var(--fau-padding);

@@ -34,6 +34,7 @@
     avatar: true,
     auteur: true,
     source: true,    // dans un encart fusionné, afficher la section d'origine
+                     // (réglable aussi encart par encart)
     datesRelatives: true,
     masquerAutoBump: false,
     cache: 300,
@@ -293,6 +294,10 @@
           });
           sujets = sujets.filter(function (s) { return gardes.indexOf(s.id) !== -1; });
           sujets.sort(function (a, b) { return gardes.indexOf(a.id) - gardes.indexOf(b.id); });
+        }
+        // provenance masquée pour cet encart seulement
+        if (sec.source === false) {
+          sujets.forEach(function (s) { s.section = ''; });
         }
         // sujets à écarter, par id (utile quand ils sont déjà dans un autre encart)
         if (sec.exclure && sec.exclure.length) {
