@@ -25,9 +25,9 @@
   document.body.appendChild(panneau);
 
   FAUpdates.init({
-    emplacement: panneau,          // un élément convient aussi bien qu'un sélecteur
+    emplacement: panneau,
     cache: 0,
-    style: false,                  // la feuille est déjà embarquée dans ce fichier
+    style: false,
     texteInterdit: '⛔ section inaccessible (ou template non lu)',
     sections: SECTIONS
   }).then(function (res) {
@@ -41,8 +41,6 @@
     });
   });
 
-  // Dump d'une ligne de sujet brute : utile pour adapter le plugin à un template
-  // exotique, ou pour repérer comment le forum marque les sujets non lus.
   fetch(SECTIONS[0].url, { credentials: 'same-origin' })
     .then(function (r) { return r.text(); })
     .then(function (html) {

@@ -134,6 +134,26 @@ window.FA_UPDATES_CONFIG = {
 
   cache: 300,             // secondes avant de réinterroger le forum (0 = jamais de cache)
 
+  repliable: false,       // ajoute un petit bouton rond pour replier le widget.
+                          // Le choix du visiteur est retenu d'une page à l'autre.
+  replieParDefaut: false, // son état la toute première fois
+
+  /* Où poser ce bouton. null = à la fin du widget. Sinon, même forme que
+   * "emplacement" : on peut le mettre dans la barre de menu du forum, dans une
+   * colonne d'icônes, n'importe où — le widget se replie quand même.
+   *   emplacementBascule: { cible: '.navbar', position: 'fin' },
+   */
+  emplacementBascule: null,
+
+  /* Ce qu'affiche le bouton. Du texte, un emoji, ou une icône de la police du
+   * forum — tout ce qui est écrit ici est inséré tel quel :
+   *   texteReplier: '<i class="cp cp-star-o"></i>',
+   *   texteDeplier: '<i class="cp cp-stars-o"></i>',
+   * Sa taille se règle en CSS :  .fau-bascule { --fau-bascule-taille: 26px; }
+   */
+  texteReplier: '×',
+  texteDeplier: '✦',
+
   texteVide: 'rien de neuf par ici',
   texteInterdit: null,    // texte si le visiteur n'a pas accès à la section
                           // null = l'encart disparaît purement et simplement

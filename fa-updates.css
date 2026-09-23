@@ -21,6 +21,9 @@
  *      .fau-soustitre            > sa ligne de sous-titre
  *      .fau-html                 > le bloc de texte
  *      .fau-boutons / .fau-bouton  > les liens vers des sujets
+ *    .fau-bascule              le bouton de repli (option repliable)
+ *      .fau-bascule--hors        > quand il est posé hors du widget
+ *    .fau-replie               posée sur .fau-root quand le widget est replié
  *    .fau-vide                 le message quand il n'y a rien
  *    .fau--attente             l'encart pendant le chargement
  * ========================================================================== */
@@ -152,8 +155,6 @@
   text-transform: var(--fau-meta-casse);
   letter-spacing: .5px;
   opacity: var(--fau-meta-opacite);
-  /* une seule ligne, quoi qu'il arrive : sans ça une méta un peu longue passe
-     à la ligne et déséquilibre la hauteur des sujets voisins */
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden;
@@ -169,7 +170,6 @@
   opacity: .6;
 }
 
-/* --- encart libre : texte + boutons ---------------------------------------- */
 .fau-soustitre {
   margin: 0 0 8px;
   font-size: var(--fau-soustitre-taille, 9px);
@@ -202,7 +202,37 @@
   flex: 0 0 auto;
 }
 
-/* chargement */
+.fau-bascule {
+  align-self: flex-end;
+  justify-self: end;
+  grid-column: 1 / -1;
+  flex: 0 0 auto;
+  width: var(--fau-bascule-taille, 26px);
+  height: var(--fau-bascule-taille, 26px);
+  padding: 0;
+  border: 1px solid var(--fau-bordure);
+  border-radius: 50%;
+  background: var(--fau-fond);
+  color: inherit;
+  font: inherit;
+  font-size: calc(var(--fau-bascule-taille, 26px) * .42);
+  line-height: 1;
+  cursor: pointer;
+  opacity: .8;
+  transition: var(--fau-transition);
+}
+
+.fau-bascule:hover { opacity: 1; }
+
+.fau-bascule--hors {
+  align-self: auto;
+  justify-self: auto;
+  grid-column: auto;
+  vertical-align: middle;
+}
+
+.fau-replie > :not(.fau-bascule) { display: none; }
+
 .fau-fantome {
   height: calc(var(--fau-avatar-taille) + 12px);
   border-radius: var(--fau-arrondi);

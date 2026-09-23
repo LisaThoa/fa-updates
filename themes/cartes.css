@@ -14,16 +14,13 @@
  * ========================================================================== */
 
 .fau-cartes {
-
-  /* --- les couleurs du thème ---------------------------------------------- */
-  --cartes-encre: #2b2f55;        /* le texte des pastilles */
-  --cartes-pastille: #eceefb;     /* le fond des pastilles */
+  --cartes-encre: #2b2f55;
+  --cartes-pastille: #eceefb;
   --cartes-pastille-survol: #e1e5fa;
-  --cartes-accent: #5b62c4;       /* la barre de titre, le pictogramme */
-  --cartes-accent-clair: #8f9bea; /* le dégradé de la barre de titre */
-  --cartes-icone: '✦';            /* le pictogramme ; '' pour une case vide */
+  --cartes-accent: #5b62c4;
+  --cartes-accent-clair: #8f9bea;
+  --cartes-icone: '✦';
 
-  /* --- les réglages repris du plugin --------------------------------------- */
   --fau-colonnes: 2;
   --fau-espacement: 8px;
   --fau-espacement-encarts: 18px;
@@ -51,7 +48,6 @@
   --fau-entete-marge: 0 0 9px;
 }
 
-/* --- la barre de titre de l'encart ----------------------------------------- */
 .fau-cartes .fau-entete {
   padding: 7px 13px;
   border-radius: 10px;
@@ -63,7 +59,6 @@
   opacity: 1;
 }
 
-/* --- une pastille : pictogramme · texte · avatar --------------------------- */
 .fau-cartes .fau-lien { gap: 10px; }
 
 .fau-cartes .fau-lien::before {
@@ -90,7 +85,6 @@
   border-radius: var(--fau-arrondi);
 }
 
-/* --- l'encart libre : texte et boutons ------------------------------------- */
 .fau-cartes .fau-libre {
   padding: 15px 16px;
   border-radius: 14px;
@@ -117,9 +111,9 @@
 }
 
 .fau-cartes .fau-bouton:hover { background: var(--cartes-accent-clair); }
-.fau-cartes .fau-bouton::before { display: none; }   /* pas de pictogramme ici */
+.fau-cartes .fau-bouton::before { display: none; }
 .fau-cartes .fau-bouton::after {
-  order: 4;            /* après le texte : le thème ordonne aussi ::before et l'avatar */
+  order: 4;
   width: 18px;
   height: 18px;
   display: flex;
@@ -131,11 +125,6 @@
   font-size: 9px;
 }
 
-/* --- l'encart libre en colonne de gauche ------------------------------------
- * Deux enfants seulement : l'encart libre, et .fau-colonne qui empile les
- * autres. Ne s'applique que s'il y a effectivement un encart libre ; sinon les
- * encarts restent empilés comme d'habitude.
- */
 .fau-cartes:has(.fau-libre) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -147,6 +136,17 @@
 }
 
 .fau-cartes .fau-fantome { background: var(--cartes-pastille); opacity: .5; }
+
+.fau-cartes .fau-bascule {
+  --fau-bascule-taille: 30px;
+  border: 0;
+  background: var(--cartes-accent);
+  color: #fff;
+  opacity: 1;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .28);
+}
+
+.fau-cartes .fau-bascule:hover { background: var(--cartes-accent-clair); }
 
 /* =============================================================================
  *  VARIANTES
@@ -204,3 +204,68 @@
  *
  *   @media (prefers-color-scheme: dark) { .fau-cartes { … } }
  */
+
+/* =============================================================================
+ *  VARIANTE FLOTTANTE
+ *  -----------------------------------------------------------------------------
+ *  Le widget se cale en bas à droite de l'écran et y reste pendant qu'on défile.
+ *
+ *  Pour l'activer :  classe: 'cartes cartes-flottant'  dans config.js
+ *  (avec la variante sombre :  'cartes cartes-sombre cartes-flottant')
+ *
+ *  Sous 700 px de large, il reprend sa place dans le flux de la page : un
+ *  panneau fixe sur un téléphone masquerait la moitié de l'écran.
+ * ========================================================================== */
+
+.fau-cartes-flottant {
+  --flottant-largeur: 300px;
+  --flottant-marge: 18px;
+  --flottant-hauteur: 72vh;   /* au-delà, le panneau défile tout seul */
+  --flottant-plan: 40;        /* z-index, à monter s'il passe sous un élément */
+
+  --fau-colonnes: 1;
+  --fau-largeur: var(--flottant-largeur);
+  --fau-espacement-encarts: 12px;
+
+  position: fixed;
+  right: var(--flottant-marge);
+  bottom: var(--flottant-marge);
+  z-index: var(--flottant-plan);
+  max-height: var(--flottant-hauteur);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--cartes-carte, #fff);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .35);
+}
+
+.fau-cartes-flottant:has(.fau-libre) {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: none;
+}
+
+.fau-cartes-flottant .fau-libre {
+  padding: 0 2px 2px;
+  background: none;
+}
+
+.fau-cartes-flottant.fau-replie {
+  width: auto;
+  --fau-largeur: auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+@media (max-width: 700px) {
+  .fau-cartes-flottant {
+    position: static;
+    max-height: none;
+    width: auto;
+    --fau-largeur: auto;
+    box-shadow: none;
+  }
+}

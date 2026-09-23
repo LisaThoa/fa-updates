@@ -157,8 +157,40 @@ deux colonnes, pictogramme carré à gauche, avatar rond à droite.
 classe: 'cartes'
 ```
 
-Il existe en clair et en sombre — `classe: 'cartes cartes-sombre'` pour la seconde,
-l'option acceptant plusieurs noms séparés par un espace.
+Il se décline :
+
+| classe | effet |
+|---|---|
+| `cartes` | le thème, en clair |
+| `cartes cartes-sombre` | la même chose en sombre |
+| `cartes cartes-flottant` | calé en bas à droite de l'écran, reste en place quand on défile |
+
+Avec `repliable: true`, un petit bouton rond permet de replier le widget — il ne
+reste alors que le bouton. Le choix du visiteur est retenu d'une page à l'autre
+(`localStorage`), et `replieParDefaut: true` le laisse fermé la première fois.
+
+Ce bouton n'est pas obligé de rester dans le widget :
+
+```js
+repliable: true,
+emplacementBascule: { cible: '.navbar', position: 'fin' }   // dans la barre de menu
+```
+
+Il porte alors la classe `.fau-bascule--hors`, pour l'habiller comme son voisinage.
+
+Son libellé accepte du texte **ou une icône** — `texteReplier` et `texteDeplier` sont
+insérés tels quels, donc `'<i class="cp cp-star-o"></i>'` fonctionne avec la police
+d'icônes du forum. Sa taille tient dans une variable :
+
+```css
+.fau-bascule { --fau-bascule-taille: 26px; }
+```
+
+L'option `classe` accepte plusieurs noms séparés par un espace, donc
+`'cartes cartes-sombre cartes-flottant'` se cumule. La variante flottante passe en
+une colonne, défile toute seule au-delà de `--flottant-hauteur` (72 vh par défaut),
+et reprend sa place dans le flux de la page sous 700 px de large — un panneau fixe
+sur un téléphone masquerait la moitié de l'écran.
 
 La classe se pose sur le conteneur (`.fau-root.fau-cartes`), donc le thème ne déborde
 jamais sur un autre widget de la page. Couleurs, pictogramme et nombre de colonnes se
