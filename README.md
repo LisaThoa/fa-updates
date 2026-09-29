@@ -31,22 +31,43 @@ On ne modifie que les deux premiers.
 
 ## Installation
 
-1. Héberger `fa-updates.js`, `fa-updates.css` et `config.js` (GitHub + jsDelivr,
-   GitHub Pages, ou n'importe quel hébergeur en https).
-2. **PA → Affichage → Gestion des codes JavaScript → Créer un nouveau JavaScript**
-   (placement : *dans l'index uniquement*, ou *toutes les pages*) :
+Le plugin se charge depuis jsDelivr ; la configuration, elle, est la tienne et
+s'écrit directement sur le forum. Le `config.js` de ce dépôt n'est qu'un modèle,
+commenté ligne à ligne : on ne le charge pas tel quel.
 
-```html
-<script src="https://cdn.jsdelivr.net/gh/LisaThoa/fa-updates@main/config.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/LisaThoa/fa-updates@main/fa-updates.js"></script>
+1. **PA → Modules → HTML & JAVASCRIPT → Gestion des codes Javascript** : activer
+   la gestion des codes.
+2. **Créer un nouveau JavaScript** (placement : *Sur l'index*, ou *Sur toutes les
+   pages*). Cette page n'accepte que du JavaScript, pas de balises `<script>` :
+   on y écrit la configuration, puis on charge le plugin depuis le code.
+
+```js
+window.FA_UPDATES_CONFIG = {
+  emplacement: { cible: '#page-body', position: 'debut' },
+  sections: [
+    { titre: 'fiches de liens', forum: 12, url: '/f12-fiches-de-liens' }
+  ]
+};
+
+(function () {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/gh/LisaThoa/fa-updates@<version>/fa-updates.js';
+  document.head.appendChild(s);
+})();
 ```
 
-`fa-updates.css` se charge toute seule, depuis le même dossier que `fa-updates.js`.
+   `<version>` est un numéro de commit (ou de version) du dépôt. Éviter `@main` :
+   il suit le dépôt, et chaque modification arriverait sur le forum sans prévenir.
+
+   `fa-updates.css` se charge toute seule, depuis le même dossier que
+   `fa-updates.js`.
 
 3. Coller le contenu de **`config.css`** dans
    *PA → Affichage → Couleurs → Feuille de style CSS*, et y régler l'apparence.
 
-Rien d'autre à faire : `config.js` dit déjà **où** le widget se pose dans la page.
+Si l'on peut modifier les templates, on peut aussi y mettre la configuration et
+le plugin dans deux balises `<script>`, la configuration en premier, par exemple
+à la fin d'`overall_footer_end`.
 
 ---
 
@@ -148,12 +169,21 @@ il se fond dans n'importe quel design sans rien régler.
 `themes/cartes.css` — barre de titre en dégradé, pastilles claires arrondies sur
 deux colonnes, pictogramme carré à gauche, avatar rond à droite.
 
+Dans un template :
+
 ```html
 <link rel="stylesheet" href=".../themes/cartes.css">
 ```
 
+ou, depuis le JavaScript de l'installation, avant le chargement du plugin :
+
 ```js
-// dans config.js
+document.head.insertAdjacentHTML('beforeend',
+  '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/LisaThoa/fa-updates@<version>/themes/cartes.css">');
+```
+
+```js
+// dans la configuration
 classe: 'cartes'
 ```
 
