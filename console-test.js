@@ -152,8 +152,22 @@
       var blocDernier = ligne.querySelector('.topicslist-lastpost, .lastpost, .lastpost-avatar');
       var txtDernier = texteDe(blocDernier);
       var txtDate = texteDe(noeudDate);
+
+      /* Le lien vers le profil du posteur, quand il y en a un (ModernBB l'écrit AVANT la date,
+         ce qui fausse la découpe « tout jusqu'à l'heure = la date »). */
+      var estProfil = function (l) { return /\/u\d+/.test(l.getAttribute('href') || '') && texteDe(l); };
+      var lienPosteur = blocDernier ? [].filter.call(blocDernier.querySelectorAll('a[href]'), estProfil)[0] : null;
+      if (!txtDate && lienPosteur) {
+        var reste = blocDernier.cloneNode(true);
+        [].forEach.call(reste.querySelectorAll('a[href], dfn, img'), function (n) {
+          if (n.tagName !== 'A' || estProfil(n)) n.parentNode.removeChild(n);
+        });
+        txtDate = (texteDe(reste).match(/.*\d{1,2}\s*:\s*\d{2}/) || [''])[0].trim();
+      }
+
       if (!txtDate && txtDernier) txtDate = (txtDernier.match(/.*\d{1,2}\s*:\s*\d{2}/) || [''])[0];
-      var posteur = txtDernier && txtDate ? txtDernier.replace(txtDate, '').trim() : '';
+      var posteur = lienPosteur ? texteDe(lienPosteur)
+        : (txtDernier && txtDate ? txtDernier.replace(txtDate, '').trim() : '');
       posteur = posteur.replace(/^par\s+/i, '').replace(/\s*voir le dernier message\s*$/i, '').trim();
 
       var img = ligne.querySelector(
