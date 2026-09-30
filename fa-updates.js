@@ -153,21 +153,31 @@
       var txtDernier = texteDe(blocDernier);
       var txtDate = texteDe(noeudDate);
 
-      /* Le lien vers le profil du posteur, quand il y en a un (ModernBB l'écrit AVANT la date,
-         ce qui fausse la découpe « tout jusqu'à l'heure = la date »). */
+      /* ModernBB écrit le posteur AVANT la date, séparés par un <br> : « Thoa Derniers Messages
+         <br> Hier à 10:28 ». Le posteur est un lien vers son profil pour un membre connecté, du
+         texte simple pour un invité. Le découpage « tout jusqu'à l'heure = la date » avalerait
+         le pseudo : on coupe au <br>, une fois retirés le libellé (dfn) et les icônes. */
       var estProfil = function (l) { return /\/u\d+/.test(l.getAttribute('href') || '') && texteDe(l); };
       var lienPosteur = blocDernier ? [].filter.call(blocDernier.querySelectorAll('a[href]'), estProfil)[0] : null;
-      if (!txtDate && lienPosteur) {
-        var reste = blocDernier.cloneNode(true);
-        [].forEach.call(reste.querySelectorAll('a[href], dfn, img'), function (n) {
-          if (n.tagName !== 'A' || estProfil(n)) n.parentNode.removeChild(n);
+      var posteurLu = '';
+      var br = blocDernier && !txtDate ? blocDernier.querySelector('br') : null;
+      if (br) {
+        var parties = br.parentNode.innerHTML.split(/<br\s*\/?>/i).map(function (morceau) {
+          var bout = doc.createElement('div');
+          bout.innerHTML = morceau;
+          [].forEach.call(bout.querySelectorAll('dfn, img'), function (n) { n.parentNode.removeChild(n); });
+          return texteDe(bout);
         });
-        txtDate = (texteDe(reste).match(/.*\d{1,2}\s*:\s*\d{2}/) || [''])[0].trim();
+        var apres = parties[parties.length - 1];
+        if (/\d{1,2}\s*:\s*\d{2}/.test(apres)) {
+          txtDate = apres;
+          posteurLu = parties[0];
+        }
       }
 
       if (!txtDate && txtDernier) txtDate = (txtDernier.match(/.*\d{1,2}\s*:\s*\d{2}/) || [''])[0];
       var posteur = lienPosteur ? texteDe(lienPosteur)
-        : (txtDernier && txtDate ? txtDernier.replace(txtDate, '').trim() : '');
+        : posteurLu || (txtDernier && txtDate ? txtDernier.replace(txtDate, '').trim() : '');
       posteur = posteur.replace(/^par\s+/i, '').replace(/\s*voir le dernier message\s*$/i, '').trim();
 
       var img = ligne.querySelector(
