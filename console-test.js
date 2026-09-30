@@ -127,7 +127,11 @@
     var doc = new DOMParser().parseFromString(html, 'text/html');
     if (estInterdit(doc)) return { interdit: true, sujets: [] };
 
-    var liens = [].slice.call(doc.querySelectorAll('a.topictitle, a[href*="/t"]'))
+    /* Les titres de sujets d'abord : la page d'une section liste aussi ses sous-forums, avec le
+       lien du dernier message de chacun, qui n'est pas un sujet de la section. Le repli sur tout
+       lien /t123- ne sert qu'aux templates qui n'ont pas de a.topictitle. */
+    var titres = doc.querySelectorAll('a.topictitle');
+    var liens = [].slice.call(titres.length ? titres : doc.querySelectorAll('a[href*="/t"]'))
       .filter(function (a) {
         var h = a.getAttribute('href') || '';
         return /\/t\d+(p\d+)?-/.test(h) && h.indexOf('#') === -1 && texteDe(a).length > 1;
@@ -234,9 +238,11 @@
     return Promise.all(sec.sources.map(function (src) {
       return chargerUne(src, cfg);
     })).then(function (parts) {
-      var sujets = [];
+      var sujets = [], vus = {};
       parts.forEach(function (p, i) {
         p.sujets.forEach(function (s) {
+          if (vus[s.id]) return;
+          vus[s.id] = 1;
           s.section = sec.sources[i].titre || p.nom || '';
           sujets.push(s);
         });
